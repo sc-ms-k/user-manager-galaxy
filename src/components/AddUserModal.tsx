@@ -22,6 +22,7 @@ const AddUserModal = ({ isOpen, onClose, onSave, isLoading }: AddUserModalProps)
   const [name, setName] = useState('');
   const [birthdate, setBirthdate] = useState<Date | undefined>(undefined);
   const [quantity, setQuantity] = useState<number>(1);
+  const [avatar, setAvatar] = useState<string | undefined>(undefined);
 
   const handleSave = async () => {
     if (!name.trim()) {
@@ -39,12 +40,14 @@ const AddUserModal = ({ isOpen, onClose, onSave, isLoading }: AddUserModalProps)
         name: name.trim(),
         birthdate: birthdate.toISOString(),
         quantity: Number(quantity),
+        avatar: avatar,
       });
       
       // Reset form
       setName('');
       setBirthdate(undefined);
       setQuantity(1);
+      setAvatar(undefined);
     } catch (error) {
       // Error is handled by the parent component
     }

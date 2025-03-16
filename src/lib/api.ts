@@ -11,17 +11,19 @@ const GET_USERS = `
       name
       birthday
       quantity
+      avatar
     }
   }
 `;
 
 const CREATE_USER = `
-  mutation CreateUser($name: String!, $birthday: String!, $quantity: Int!) {
-    createUser(name: $name, birthday: $birthday, quantity: $quantity) {
+  mutation CreateUser($input: CreateUserInput!) {
+    createUser(input: $input) {
       id
       name
       birthday
       quantity
+      avatar
     }
   }
 `;
@@ -52,6 +54,7 @@ export async function fetchUsers(): Promise<ApiResponse<User[]>> {
       name: user.name,
       birthdate: user.birthday, // Map birthday to birthdate
       quantity: user.quantity,
+      avatar: user.avatar,
     }));
 
     return { success: true, data: users };
@@ -68,9 +71,12 @@ export async function createUser(user: Omit<User, 'id'>): Promise<ApiResponse<Us
   try {
     // Convert from client model to server model (birthdate -> birthday)
     const variables = {
-      name: user.name,
-      birthday: user.birthdate, // Map birthdate to birthday
-      quantity: user.quantity,
+      input: {
+        name: user.name,
+        birthday: user.birthdate, // Map birthdate to birthday
+        quantity: user.quantity,
+        avatar: user.avatar
+      }
     };
     
     console.log('Sending createUser mutation with variables:', variables);
@@ -100,6 +106,7 @@ export async function createUser(user: Omit<User, 'id'>): Promise<ApiResponse<Us
       name: serverUser.name,
       birthdate: serverUser.birthday, // Map birthday to birthdate
       quantity: serverUser.quantity,
+      avatar: serverUser.avatar,
     };
 
     return { success: true, data: clientUser };

@@ -21,24 +21,26 @@ const resolvers = {
     }
   },
   Mutation: {
-    createUser: async (_, { name, birthday, quantity }, { db }) => {
+    createUser: async (_, { input }, { db }) => {
       try {
-        console.log('Creating user with data:', { name, birthday, quantity });
+        const { name, birthday, quantity, avatar } = input;
+        console.log('Creating user with data:', { name, birthday, quantity, avatar });
         
         const [result] = await db.query(
-          'INSERT INTO users (name, birthday, quantity) VALUES (?, ?, ?)',
-          [name, birthday, quantity]
+          'INSERT INTO users (name, birthday, quantity, avatar) VALUES (?, ?, ?, ?)',
+          [name, birthday, quantity, avatar]
         );
         
         const id = result.insertId;
-        return { id, name, birthday, quantity };
+        return { id, name, birthday, quantity, avatar };
       } catch (error) {
         console.error('Error creating user:', error);
         throw new Error('Failed to create user');
       }
     },
-    updateUser: async (_, { id, name, birthday, quantity }, { db }) => {
+    updateUser: async (_, { id, input }, { db }) => {
       try {
+        const { name, birthday, quantity, avatar } = input;
         const updates = [];
         const params = [];
         
@@ -55,6 +57,11 @@ const resolvers = {
         if (quantity !== undefined) {
           updates.push('quantity = ?');
           params.push(quantity);
+        }
+        
+        if (avatar !== undefined) {
+          updates.push('avatar = ?');
+          params.push(avatar);
         }
         
         if (updates.length === 0) return null;

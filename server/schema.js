@@ -7,18 +7,21 @@ const typeDefs = gql`
     name: String!
     birthday: String!
     quantity: Int!
+    avatar: String
   }
   
   input CreateUserInput {
     name: String!
     birthday: String!
     quantity: Int!
+    avatar: String
   }
   
   input UpdateUserInput {
     name: String
     birthday: String
     quantity: Int
+    avatar: String
   }
   
   type Query {
@@ -27,8 +30,8 @@ const typeDefs = gql`
   }
   
   type Mutation {
-    createUser(name: String!, birthday: String!, quantity: Int!): User
-    updateUser(id: ID!, name: String, birthday: String, quantity: Int): User
+    createUser(input: CreateUserInput!): User
+    updateUser(id: ID!, input: UpdateUserInput!): User
     deleteUser(id: ID!): Boolean
   }
 `;
