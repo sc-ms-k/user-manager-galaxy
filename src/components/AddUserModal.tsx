@@ -8,7 +8,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
 import { User } from '@/types';
-import { toast } from '@/components/ui/sonner';
+import { toast } from 'sonner';
 import UserAvatar from './UserAvatar';
 
 interface AddUserModalProps {

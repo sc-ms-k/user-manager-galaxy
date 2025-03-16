@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/sonner';
+import { toast } from 'sonner';
 import UserTable from '@/components/UserTable';
 import AddUserModal from '@/components/AddUserModal';
 import { fetchUsers, createUser } from '@/lib/api';
