@@ -1,16 +1,17 @@
-
 import { useState } from 'react';
 import { UserRound } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 interface UserAvatarProps {
   name: string;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  imageUrl?: string;
 }
 
-const UserAvatar = ({ name, className, size = 'md' }: UserAvatarProps) => {
-  const [loaded, setLoaded] = useState(false);
+const UserAvatar = ({ name, className, size = 'md', imageUrl }: UserAvatarProps) => {
+  const [imageError, setImageError] = useState(false);
 
   // Size maps
   const sizesMap = {
@@ -21,6 +22,7 @@ const UserAvatar = ({ name, className, size = 'md' }: UserAvatarProps) => {
 
   // Create initials from name
   const getInitials = (name: string) => {
+    if (!name) return '';
     const nameParts = name.split(' ');
     if (nameParts.length > 1) {
       return `${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase();
@@ -43,6 +45,26 @@ const UserAvatar = ({ name, className, size = 'md' }: UserAvatarProps) => {
     return colors[index];
   };
 
+  // If we have a valid image URL and no error loading it, use Avatar component
+  if (imageUrl && !imageError) {
+    return (
+      <Avatar className={cn(sizesMap[size], className)}>
+        <AvatarImage 
+          src={imageUrl} 
+          alt={name || 'User avatar'}
+          onError={() => setImageError(true)}
+        />
+        <AvatarFallback className={name ? getColorClass(name) : 'bg-secondary'}>
+          {name ? getInitials(name) : <UserRound className={cn(
+            "text-foreground/80",
+            size === 'sm' ? 'h-4 w-4' : size === 'md' ? 'h-6 w-6' : 'h-8 w-8'
+          )} />}
+        </AvatarFallback>
+      </Avatar>
+    );
+  }
+
+  // Otherwise, fall back to the original implementation
   return (
     <div
       className={cn(

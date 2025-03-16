@@ -27,7 +27,7 @@ async function initialize() {
         name VARCHAR(255) NOT NULL,
         birthday VARCHAR(255) NOT NULL,
         quantity INT NOT NULL,
-        avatar VARCHAR(255)
+        avatar LONGTEXT
       )
     `);
     console.log('Users table initialized');

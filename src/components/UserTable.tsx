@@ -41,7 +41,11 @@ const UserTable = ({ users, isLoading }: UserTableProps) => {
               <tr key={user.id} className="table-row-animate">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center space-x-3">
-                    <UserAvatar name={user.name} size="sm" />
+                    <UserAvatar 
+                      name={user.name} 
+                      size="sm" 
+                      imageUrl={user.avatar}
+                    />
                     <span className="font-medium">{user.name}</span>
                   </div>
                 </td>
