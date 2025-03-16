@@ -1,7 +1,7 @@
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon, UserRound, X, Loader2 } from 'lucide-react';
+import { Calendar as CalendarIcon, UserRound, X, Loader2, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -22,6 +22,8 @@ const AddUserModal = ({ isOpen, onClose, onSave, isLoading }: AddUserModalProps)
   const [name, setName] = useState('');
   const [birthdate, setBirthdate] = useState<Date | undefined>(undefined);
   const [quantity, setQuantity] = useState<number>(1);
+  const [avatar, setAvatar] = useState<string | undefined>(undefined);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSave = async () => {
     if (!name.trim()) {
@@ -50,6 +52,38 @@ const AddUserModal = ({ isOpen, onClose, onSave, isLoading }: AddUserModalProps)
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // File size validation (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('Image is too large', {
+        description: 'Please select an image smaller than 2MB'
+      });
+      return;
+    }
+
+    // File type validation
+    if (!file.type.startsWith('image/')) {
+      toast.error('Invalid file type', {
+        description: 'Please select an image file'
+      });
+      return;
+    }
+
+    // Convert to base64
+    const reader = new FileReader();
+    reader.onload = () => {
+      setAvatar(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -72,8 +106,30 @@ const AddUserModal = ({ isOpen, onClose, onSave, isLoading }: AddUserModalProps)
         
         <div className="p-6 space-y-6">
           <div className="flex flex-col items-center">
-            <UserAvatar name={name} size="lg" className="mb-3" />
-            <span className="text-sm text-muted-foreground">User Icon</span>
+            <div 
+              className="relative cursor-pointer group"
+              onClick={handleAvatarClick}
+            >
+              <UserAvatar 
+                name={name} 
+                size="lg" 
+                className="mb-3"
+                imageUrl={avatar} 
+              />
+              <div className="absolute inset-0 bg-black/30 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                <Upload className="h-6 w-6 text-white" />
+              </div>
+              <input 
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                accept="image/*"
+                className="hidden"
+              />
+            </div>
+            <span className="text-sm text-muted-foreground">
+              {avatar ? 'Click to change' : 'Click to upload avatar'}
+            </span>
           </div>
           
           <div className="space-y-4">
