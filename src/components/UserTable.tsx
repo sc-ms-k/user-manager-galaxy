@@ -46,9 +46,6 @@ const UserTable = ({ users, isLoading }: UserTableProps) => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  {format(new Date(user.birthdate), 'MMMM d, yyyy')}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
                     {user.quantity}
                   </span>

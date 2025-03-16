@@ -23,16 +23,16 @@ const resolvers = {
   Mutation: {
     createUser: async (_, { input }, { db }) => {
       try {
-        const { name, birthday, quantity, avatar } = input;
-        console.log('Creating user with data:', { name, birthday, quantity, avatar });
+        const { name, birthday, quantity} = input;
+        console.log('Creating user with data:', { name, birthday, quantity});
         
         const [result] = await db.query(
-          'INSERT INTO users (name, birthday, quantity, avatar) VALUES (?, ?, ?, ?)',
-          [name, birthday, quantity, avatar]
+          'INSERT INTO users (name, birthday, quantity) VALUES (?, ?, ?, ?)',
+          [name, birthday, quantity]
         );
         
         const id = result.insertId;
-        return { id, name, birthday, quantity, avatar };
+        return { id, name, birthday, quantity};
       } catch (error) {
         console.error('Error creating user:', error);
         throw new Error('Failed to create user');
@@ -40,7 +40,7 @@ const resolvers = {
     },
     updateUser: async (_, { id, input }, { db }) => {
       try {
-        const { name, birthday, quantity, avatar } = input;
+        const { name, birthday, quantity} = input;
         const updates = [];
         const params = [];
         
