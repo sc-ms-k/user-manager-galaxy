@@ -25,7 +25,7 @@ const UserTable = ({ users, isLoading }: UserTableProps) => {
         <thead className="bg-secondary/50 text-sm text-muted-foreground">
           <tr>
             <th className="px-6 py-3 text-left font-medium">User</th>
-            <th className="px-6 py-3 text-left font-medium">Birthdate</th>
+            <th className="px-6 py-3 text-left font-medium">Birthday</th>
             <th className="px-6 py-3 text-left font-medium">Quantity</th>
           </tr>
         </thead>

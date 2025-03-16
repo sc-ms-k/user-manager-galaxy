@@ -9,18 +9,18 @@ const GET_USERS = `
     users {
       id
       name
-      birthdate
+      birthday
       quantity
     }
   }
 `;
 
-const ADD_USER = `
-  mutation AddUser($name: String!, $birthdate: String!, $quantity: Int!) {
-    addUser(name: $name, birthdate: $birthdate, quantity: $quantity) {
+const CREATE_USER = `
+  mutation CreateUser($name: String!, $birthday: String!, $quantity: Int!) {
+    createUser(name: $name, birthday: $birthday, quantity: $quantity) {
       id
       name
-      birthdate
+      birthday
       quantity
     }
   }
@@ -63,10 +63,10 @@ export async function createUser(user: Omit<User, 'id'>): Promise<ApiResponse<Us
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        query: ADD_USER,
+        query: CREATE_USER,
         variables: {
           name: user.name,
-          birthdate: user.birthdate,
+          birthday: user.birthdate, // Map from client's birthdate to server's birthday
           quantity: user.quantity,
         },
       }),
@@ -78,7 +78,16 @@ export async function createUser(user: Omit<User, 'id'>): Promise<ApiResponse<Us
       return { success: false, error: result.errors[0].message };
     }
 
-    return { success: true, data: result.data.addUser };
+    // Map from server's birthday back to client's birthdate
+    const serverUser = result.data.createUser;
+    const clientUser: User = {
+      id: serverUser.id,
+      name: serverUser.name,
+      birthdate: serverUser.birthday,
+      quantity: serverUser.quantity,
+    };
+
+    return { success: true, data: clientUser };
   } catch (error) {
     console.error('Error creating user:', error);
     return { 
