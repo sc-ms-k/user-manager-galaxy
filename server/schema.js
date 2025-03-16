@@ -1,4 +1,3 @@
-
 const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
@@ -33,6 +32,8 @@ const typeDefs = gql`
     createUser(input: CreateUserInput!): User
     updateUser(id: ID!, input: UpdateUserInput!): User
     deleteUser(id: ID!): Boolean
+    updateUserQuantity(id: ID!, quantity: Int!): User!
+    updateUserBirthday(id: ID!, birthday: String!): User!
   }
 `;
 
