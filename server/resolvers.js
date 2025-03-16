@@ -23,6 +23,8 @@ const resolvers = {
   Mutation: {
     createUser: async (_, { name, birthday, quantity }, { db }) => {
       try {
+        console.log('Creating user with data:', { name, birthday, quantity });
+        
         const [result] = await db.query(
           'INSERT INTO users (name, birthday, quantity) VALUES (?, ?, ?)',
           [name, birthday, quantity]

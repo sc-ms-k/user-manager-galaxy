@@ -42,10 +42,19 @@ export async function fetchUsers(): Promise<ApiResponse<User[]>> {
     const result = await response.json();
     
     if (result.errors) {
+      console.error('GraphQL error:', result.errors);
       return { success: false, error: result.errors[0].message };
     }
 
-    return { success: true, data: result.data.users };
+    // Map server response (birthday) to client model (birthdate)
+    const users = result.data.users.map((user: any) => ({
+      id: user.id,
+      name: user.name,
+      birthdate: user.birthday, // Map birthday to birthdate
+      quantity: user.quantity,
+    }));
+
+    return { success: true, data: users };
   } catch (error) {
     console.error('Error fetching users:', error);
     return { 
@@ -57,6 +66,15 @@ export async function fetchUsers(): Promise<ApiResponse<User[]>> {
 
 export async function createUser(user: Omit<User, 'id'>): Promise<ApiResponse<User>> {
   try {
+    // Convert from client model to server model (birthdate -> birthday)
+    const variables = {
+      name: user.name,
+      birthday: user.birthdate, // Map birthdate to birthday
+      quantity: user.quantity,
+    };
+    
+    console.log('Sending createUser mutation with variables:', variables);
+    
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
@@ -64,17 +82,14 @@ export async function createUser(user: Omit<User, 'id'>): Promise<ApiResponse<Us
       },
       body: JSON.stringify({
         query: CREATE_USER,
-        variables: {
-          name: user.name,
-          birthday: user.birthdate, // Map from client's birthdate to server's birthday
-          quantity: user.quantity,
-        },
+        variables: variables,
       }),
     });
 
     const result = await response.json();
     
     if (result.errors) {
+      console.error('GraphQL error:', result.errors);
       return { success: false, error: result.errors[0].message };
     }
 
@@ -83,7 +98,7 @@ export async function createUser(user: Omit<User, 'id'>): Promise<ApiResponse<Us
     const clientUser: User = {
       id: serverUser.id,
       name: serverUser.name,
-      birthdate: serverUser.birthday,
+      birthdate: serverUser.birthday, // Map birthday to birthdate
       quantity: serverUser.quantity,
     };
 

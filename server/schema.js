@@ -9,6 +9,18 @@ const typeDefs = gql`
     quantity: Int!
   }
   
+  input CreateUserInput {
+    name: String!
+    birthday: String!
+    quantity: Int!
+  }
+  
+  input UpdateUserInput {
+    name: String
+    birthday: String
+    quantity: Int
+  }
+  
   type Query {
     users: [User]!
     user(id: ID!): User
