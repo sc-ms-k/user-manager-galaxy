@@ -41,12 +41,14 @@ const AddUserModal = ({ isOpen, onClose, onSave, isLoading }: AddUserModalProps)
         name: name.trim(),
         birthdate: birthdate.toISOString(),
         quantity: Number(quantity),
+        avatar: avatar.trim()
       });
       
       // Reset form
       setName('');
       setBirthdate(undefined);
       setQuantity(1);
+      setAvatar('');
     } catch (error) {
       // Error is handled by the parent component
     }

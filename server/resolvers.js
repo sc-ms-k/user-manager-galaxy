@@ -1,4 +1,3 @@
-
 const resolvers = {
   Query: {
     users: async (_, __, { db }) => {
@@ -23,16 +22,15 @@ const resolvers = {
   Mutation: {
     createUser: async (_, { input }, { db }) => {
       try {
-        const { name, birthday, quantity} = input;
-        console.log('Creating user with data:', { name, birthday, quantity});
+        const { name, birthday, quantity, avatar } = input;
         
         const [result] = await db.query(
-          'INSERT INTO users (name, birthday, quantity) VALUES (?, ?, ?, ?)',
-          [name, birthday, quantity]
+          'INSERT INTO users (name, birthday, quantity, avatar) VALUES (?, ?, ?, ?)',
+          [name, birthday, quantity, avatar]
         );
         
         const id = result.insertId;
-        return { id, name, birthday, quantity};
+        return { id, name, birthday, quantity, avatar };
       } catch (error) {
         console.error('Error creating user:', error);
         throw new Error('Failed to create user');
@@ -40,7 +38,7 @@ const resolvers = {
     },
     updateUser: async (_, { id, input }, { db }) => {
       try {
-        const { name, birthday, quantity} = input;
+        const { name, birthday, quantity, avatar } = input;
         const updates = [];
         const params = [];
         
@@ -87,6 +85,34 @@ const resolvers = {
       } catch (error) {
         console.error(`Error deleting user with id ${id}:`, error);
         throw new Error('Failed to delete user');
+      }
+    },
+    updateUserQuantity: async (_, { id, quantity }, { db }) => {
+      try {
+        await db.query(
+          'UPDATE users SET quantity = ? WHERE id = ?',
+          [quantity, id]
+        );
+        
+        const [rows] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
+        return rows[0];
+      } catch (error) {
+        console.error('Error updating user quantity:', error);
+        throw new Error('Failed to update user quantity');
+      }
+    },
+    updateUserBirthday: async (_, { id, birthday }, { db }) => {
+      try {
+        await db.query(
+          'UPDATE users SET birthday = ? WHERE id = ?',
+          [birthday, id]
+        );
+        
+        const [rows] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
+        return rows[0];
+      } catch (error) {
+        console.error('Error updating user birthday:', error);
+        throw new Error('Failed to update user birthday');
       }
     }
   }
